@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  background: #0c0c0c;
+}
+
+body {
+  font-family: "Kanit", sans-serif;
+}
+
+.hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Same oversized cinematic treatment, tuned for light section backgrounds
+   so the heading keeps strong contrast instead of washing out. */
+.hero-heading-dark {
+  background: linear-gradient(180deg, #0c0c0c 0%, #4a4f57 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtle glow effects to blend the avatar into the dark hero background.
+   Layered drop-shadows: dark base, purple ambient, blue rim highlight. */
+.hero-avatar-glow {
+  filter:
+    drop-shadow(0 16px 48px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 40px rgba(138, 43, 226, 0.12))
+    drop-shadow(0 0 80px rgba(100, 80, 220, 0.06))
+    drop-shadow(0 -4px 24px rgba(120, 160, 255, 0.08));
+  transition: filter 0.35s ease;
+}
+
+.hero-avatar-glow:hover {
+  filter:
+    drop-shadow(0 12px 40px rgba(0, 0, 0, 0.65))
+    drop-shadow(0 0 48px rgba(138, 43, 226, 0.22))
+    drop-shadow(0 0 90px rgba(100, 80, 220, 0.12))
+    drop-shadow(0 -4px 28px rgba(120, 160, 255, 0.14));
+}
