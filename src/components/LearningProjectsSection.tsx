@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Github, ExternalLink, X, ArrowRight } from "lucide-react";
 import FadeIn from "./FadeIn";
 import { LEARNING_PROJECTS, type LearningProject } from "../data/projects";
+import { useScrollLock } from "../hooks/useScrollLock";
+import ModalPortal from "./ModalPortal";
 
 // ─── Badge colour map ─────────────────────────────────────────────────────────
 // Intentionally softer than the Experience section — this section should feel
@@ -70,16 +72,14 @@ function LearningModal({
 }) {
   const badge = getBadgeStyle(project.badge);
 
+  useScrollLock(true);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
-    };
+    return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
 
   return (
@@ -102,6 +102,8 @@ function LearningModal({
         exit={{ opacity: 0, scale: 0.94, y: 24 }}
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
         className="relative w-full max-w-xl max-h-[88vh] overflow-y-auto rounded-2xl"
         style={{
           background: "rgba(12,12,16,0.98)",
@@ -109,6 +111,7 @@ function LearningModal({
           boxShadow: `0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px ${badge.border}`,
           scrollbarWidth: "thin",
           scrollbarColor: "rgba(255,255,255,0.07) transparent",
+          overscrollBehavior: "contain",
         }}
       >
         {/* Header */}
@@ -530,9 +533,11 @@ export default function LearningProjectsSection() {
         </div>
       </section>
 
-      <AnimatePresence>
-        {active && <LearningModal project={active} onClose={close} />}
-      </AnimatePresence>
+      <ModalPortal>
+        <AnimatePresence>
+          {active && <LearningModal project={active} onClose={close} />}
+        </AnimatePresence>
+      </ModalPortal>
     </>
   );
 }

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, X, ExternalLink, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import FadeIn from "./FadeIn";
 import { CASE_STUDIES, type CaseStudyItem, type CaseStudyStatus } from "../data/experience";
+import { useScrollLock } from "../hooks/useScrollLock";
+import ModalPortal from "./ModalPortal";
 
 // ─── Palette ──────────────────────────────────────────────────────────────────
 const CATEGORY_ACCENT: Record<string, { color: string; bg: string; border: string }> = {
@@ -330,11 +332,12 @@ function CaseStudyModal({ item, onClose }: { item: CaseStudyItem; onClose: () =>
   const imgs = item.images ?? [];
   const labels = item.imageLabels ?? imgs.map((_, i) => `Image ${i + 1}`);
 
+  useScrollLock(true);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", handler); document.body.style.overflow = ""; };
+    return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
 
   return (
@@ -345,10 +348,13 @@ function CaseStudyModal({ item, onClose }: { item: CaseStudyItem; onClose: () =>
       <motion.div initial={{ opacity: 0, scale: 0.93, y: 28 }} animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.93, y: 28 }} transition={{ duration: 0.3, ease: [0.22,1,0.36,1] }}
         onClick={e => e.stopPropagation()}
+        onWheel={e => e.stopPropagation()}
+        onTouchMove={e => e.stopPropagation()}
         className="relative w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl"
         style={{ background: "rgba(12,12,16,0.98)", border: "1px solid rgba(255,255,255,0.1)",
           boxShadow: `0 40px 90px rgba(0,0,0,0.75), 0 0 0 1px ${accent.border}`,
-          scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.08) transparent" }}>
+          scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.08) transparent",
+          overscrollBehavior: "contain" }}>
 
         {/* Header */}
         <div className="relative px-7 pt-8 pb-6"
@@ -484,9 +490,11 @@ export default function ExperienceSection() {
           )}
         </div>
       </section>
-      <AnimatePresence>
-        {active && <CaseStudyModal item={active} onClose={close} />}
-      </AnimatePresence>
+      <ModalPortal>
+        <AnimatePresence>
+          {active && <CaseStudyModal item={active} onClose={close} />}
+        </AnimatePresence>
+      </ModalPortal>
     </>
   );
 }

@@ -4,6 +4,8 @@ import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence }
 import { ArrowUpRight, Github, X, ChevronLeft, ChevronRight } from "lucide-react";
 import GhostButton from "./GhostButton";
 import type { Project } from "../data/projects";
+import { useScrollLock } from "../hooks/useScrollLock";
+import ModalPortal from "./ModalPortal";
 
 export interface ProjectCardProps {
   project: Project;
@@ -205,16 +207,18 @@ function ProjectModal({ project, onClose, onPrev, onNext, hasPrev, hasNext }: {
   const imgs = project.images ?? [];
   const labels = project.imageLabels ?? imgs.map((_, i) => `Screenshot ${i + 1}`);
 
+  // Lock page scroll (Lenis + body) while modal is open
+  useScrollLock(true);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (lightboxIndex !== null) return; // let lightbox handle it
+      if (lightboxIndex !== null) return;
       if (e.key === "Escape") onClose();
       if (e.key === "ArrowLeft" && hasPrev) onPrev?.();
       if (e.key === "ArrowRight" && hasNext) onNext?.();
     };
     document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", handler); document.body.style.overflow = ""; };
+    return () => document.removeEventListener("keydown", handler);
   }, [onClose, onPrev, onNext, hasPrev, hasNext, lightboxIndex]);
 
   return (
@@ -230,11 +234,14 @@ function ProjectModal({ project, onClose, onPrev, onNext, hasPrev, hasNext }: {
           initial={{ opacity: 0, scale: 0.93, y: 28 }} animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.93, y: 28 }} transition={{ duration: 0.3, ease: [0.22,1,0.36,1] }}
           onClick={e => e.stopPropagation()}
+          onWheel={e => e.stopPropagation()}
+          onTouchMove={e => e.stopPropagation()}
           className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl"
           style={{
             background: "rgba(12,12,16,0.98)", border: "1px solid rgba(255,255,255,0.1)",
             boxShadow: "0 40px 100px rgba(0,0,0,0.75)",
             scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.07) transparent",
+            overscrollBehavior: "contain",
           }}
         >
           {/* ── Hero image ── */}
@@ -364,26 +371,7 @@ function ProjectModal({ project, onClose, onPrev, onNext, hasPrev, hasNext }: {
             )}
           </div>
 
-          {/* ── Prev / Next navigation ── */}
-          {(hasPrev || hasNext) && (
-            <div className="flex items-center justify-between px-6 sm:px-8 py-4"
-              style={{ borderTop:"1px solid rgba(255,255,255,0.07)" }}>
-              <button onClick={e => { e.stopPropagation(); onPrev?.(); }} disabled={!hasPrev}
-                className="inline-flex items-center gap-2 rounded-full font-medium uppercase tracking-widest text-[0.62rem] px-4 py-2 transition-colors duration-150 disabled:opacity-25 disabled:cursor-not-allowed"
-                style={{ color:"rgba(215,226,234,0.7)", border:"1px solid rgba(215,226,234,0.15)", background:"transparent" }}
-                onMouseEnter={e => !(!hasPrev) && ((e.currentTarget as HTMLButtonElement).style.background="rgba(215,226,234,0.07)")}
-                onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background="transparent")}>
-                <ChevronLeft size={12} /> Previous Project
-              </button>
-              <button onClick={e => { e.stopPropagation(); onNext?.(); }} disabled={!hasNext}
-                className="inline-flex items-center gap-2 rounded-full font-medium uppercase tracking-widest text-[0.62rem] px-4 py-2 transition-colors duration-150 disabled:opacity-25 disabled:cursor-not-allowed"
-                style={{ color:"rgba(215,226,234,0.7)", border:"1px solid rgba(215,226,234,0.15)", background:"transparent" }}
-                onMouseEnter={e => !(!hasNext) && ((e.currentTarget as HTMLButtonElement).style.background="rgba(215,226,234,0.07)")}
-                onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background="transparent")}>
-                Next Project <ChevronRight size={12} />
-              </button>
-            </div>
-          )}
+         
         </motion.div>
       </motion.div>
 
@@ -527,20 +515,24 @@ const ProjectCard = memo(function ProjectCard({
         </motion.div>
       </div>
 
-      {/* Card-level lightbox (when modal is closed) */}
-      <AnimatePresence>
-        {cardLightboxIndex !== null && !modalOpen && (
-          <Lightbox images={imgs} labels={imgLabels} startIndex={cardLightboxIndex} onClose={() => setCardLightboxIndex(null)} />
-        )}
-      </AnimatePresence>
+      {/* Card-level lightbox (when modal is closed) — portalled to document.body */}
+      <ModalPortal>
+        <AnimatePresence>
+          {cardLightboxIndex !== null && !modalOpen && (
+            <Lightbox images={imgs} labels={imgLabels} startIndex={cardLightboxIndex} onClose={() => setCardLightboxIndex(null)} />
+          )}
+        </AnimatePresence>
+      </ModalPortal>
 
-      {/* Project modal */}
-      <AnimatePresence>
-        {modalOpen && (
-          <ProjectModal project={project} onClose={onCloseModal!}
-            onPrev={onPrev} onNext={onNext} hasPrev={hasPrev} hasNext={hasNext} />
-        )}
-      </AnimatePresence>
+      {/* Project modal — portalled to document.body for true modal behavior */}
+      <ModalPortal>
+        <AnimatePresence>
+          {modalOpen && (
+            <ProjectModal project={project} onClose={onCloseModal!}
+              onPrev={onPrev} onNext={onNext} hasPrev={hasPrev} hasNext={hasNext} />
+          )}
+        </AnimatePresence>
+      </ModalPortal>
     </>
   );
 });
