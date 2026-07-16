@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, memo, useMemo } from "react";
 import type { MutableRefObject } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Github, X, ChevronLeft, ChevronRight } from "lucide-react";
@@ -406,7 +406,7 @@ function ScreenshotTile({ src, alt, className, style, onClick }: {
       style={{ border:"1px solid rgba(215,226,234,0.12)", ...style }}
       whileHover={{ scale:1.02 }} transition={{ duration:0.22, ease:[0.22,1,0.36,1] }}
       onClick={e => { e.stopPropagation(); onClick(); }}>
-      <img src={src} alt={alt} loading="lazy" draggable={false} className="w-full h-full object-cover object-top" />
+      <img src={src} alt={alt} loading="lazy" decoding="async" draggable={false} className="w-full h-full object-cover object-top" />
     </motion.div>
   );
 }
@@ -416,7 +416,7 @@ function TintTile({ tint, className, style }: { tint:string; className?:string; 
 }
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
-export default function ProjectCard({
+const ProjectCard = memo(function ProjectCard({
   project, index, total, displayNumber, cardRef, nextCardRef,
   modalOpen, onOpenModal, onCloseModal, onPrev, onNext, hasPrev, hasNext,
 }: ProjectCardProps) {
@@ -425,22 +425,32 @@ export default function ProjectCard({
   const [cardLightboxIndex, setCardLightboxIndex] = useState<number | null>(null);
 
   const { scrollYProgress } = useScroll({ target: selfRef, offset: ["start end","start start"] });
-  const targetScale = 1 - (total - 1 - index) * 0.03;
+  const targetScale = useMemo(() => 1 - (total - 1 - index) * 0.03, [total, index]);
   const scale = useTransform(scrollYProgress, [0,1], [1, targetScale]);
 
   const { scrollYProgress: coverProgress } = useScroll({
     target: nextCardRef ?? fallbackRef, offset: ["start end","start start"],
   });
   const [compact, setCompact] = useState(false);
-  useMotionValueEvent(coverProgress, "change", latest => { setCompact(latest > 0.5); });
+  useMotionValueEvent(coverProgress, "change", latest => {
+    // Hysteresis: only flip state when crossing thresholds, prevents thrashing
+    setCompact(prev => {
+      if (!prev && latest > 0.55) return true;
+      if (prev && latest < 0.45) return false;
+      return prev;
+    });
+  });
 
   const assignRootRef = (el: HTMLDivElement | null) => {
     selfRef.current = el;
     if (cardRef) cardRef.current = el;
   };
 
-  const imgs = project.images ?? [];
-  const imgLabels = project.imageLabels ?? imgs.map((_, i) => `Screenshot ${i + 1}`);
+  const imgs = useMemo(() => project.images ?? [], [project.images]);
+  const imgLabels = useMemo(
+    () => project.imageLabels ?? imgs.map((_, i) => `Screenshot ${i + 1}`),
+    [project.imageLabels, imgs]
+  );
   const hasImages = imgs.length > 0;
 
   return (
@@ -533,4 +543,6 @@ export default function ProjectCard({
       </AnimatePresence>
     </>
   );
-}
+});
+
+export default ProjectCard;

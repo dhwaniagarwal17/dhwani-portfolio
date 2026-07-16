@@ -53,12 +53,15 @@ export default function HeroSection() {
                   whileHover={{ y: -3 }}
                   className="hero-avatar-glow w-[259px] sm:w-[335px] md:w-[426px] lg:w-[493px]"
                   style={{ imageRendering: "auto" }}
+                  onMouseEnter={e => (e.currentTarget as HTMLDivElement).classList.add("hero-avatar-glow-hover")}
+                  onMouseLeave={e => (e.currentTarget as HTMLDivElement).classList.remove("hero-avatar-glow-hover")}
                 >
                   <img
                     src="/images/avatar.png"
                     alt="Dhwani – portrait"
                     className="w-full h-auto object-contain"
-                    loading="lazy"
+                    loading="eager"
+                    decoding="async"
                     draggable={false}
                     style={{ imageRendering: "auto" }}
                   />

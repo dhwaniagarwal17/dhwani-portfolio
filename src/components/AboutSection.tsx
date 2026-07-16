@@ -1,7 +1,36 @@
 import FadeIn from "./FadeIn";
 import ContactButton from "./ContactButton";
 import AnimatedParagraph from "./AnimatedParagraph";
-import { ABOUT_TEXT, CORNER_IMAGES } from "../data/about";
+import { ABOUT_TEXT } from "../data/about";
+
+/**
+ * Corner decorations are pure CSS radial gradients — zero network requests,
+ * no layout shift, no additional motion nodes.
+ */
+function CornerGlow({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
+  const coords: Record<string, React.CSSProperties> = {
+    tl: { top: "4%", left: "2%" },
+    tr: { top: "4%", right: "2%" },
+    bl: { bottom: "8%", left: "6%" },
+    br: { bottom: "8%", right: "6%" },
+  };
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute pointer-events-none"
+      style={{
+        ...coords[position],
+        width: "clamp(80px, 12vw, 180px)",
+        height: "clamp(80px, 12vw, 180px)",
+        background:
+          "radial-gradient(circle, rgba(118,33,176,0.18) 0%, rgba(182,0,168,0.07) 50%, transparent 75%)",
+        borderRadius: "50%",
+        filter: "blur(18px)",
+        willChange: "transform",
+      }}
+    />
+  );
+}
 
 export default function AboutSection() {
   return (
@@ -10,18 +39,11 @@ export default function AboutSection() {
       className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-9 py-14"
       style={{ overflowX: "clip" }}
     >
-      {CORNER_IMAGES.map((c, i) => (
-        <FadeIn
-          key={i}
-          delay={c.delay}
-          x={c.x}
-          y={0}
-          duration={0.9}
-          className={`absolute ${c.pos} ${c.w} pointer-events-none`}
-        >
-          <img src={c.src} alt="" className="w-full h-auto" loading="lazy" />
-        </FadeIn>
-      ))}
+      {/* Decorative corner glows — CSS only, no network requests */}
+      <CornerGlow position="tl" />
+      <CornerGlow position="tr" />
+      <CornerGlow position="bl" />
+      <CornerGlow position="br" />
 
       <FadeIn delay={0} y={40}>
         <h2

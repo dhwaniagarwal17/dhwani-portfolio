@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import type { MutableRefObject } from "react";
 import FadeIn from "./FadeIn";
 import ProjectCard from "./ProjectCard";
@@ -16,8 +16,8 @@ export default function ProjectsSection() {
   // Modal state: which index in `reversed` is open (-1 = none)
   const [openIndex, setOpenIndex] = useState<number>(-1);
 
-  const close = () => setOpenIndex(-1);
-  const goTo = (i: number) => setOpenIndex(i);
+  const close = useCallback(() => setOpenIndex(-1), []);
+  const goTo = useCallback((i: number) => setOpenIndex(i), []);
 
   return (
     <section
