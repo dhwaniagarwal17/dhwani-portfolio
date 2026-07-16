@@ -52,8 +52,20 @@ export const CASE_STUDIES: CaseStudyItem[] = [
     metadata: "Client Project • 2026",
     duration: "2026",
     status: "Completed",
-    // Images will be added here once screenshots are ready:
-    // images: ["/images/talklaws-home.png", "/images/talklaws-services.png", ...],
+    images: [
+      "/images/talklaws/Screenshot 2026-07-15 123416.png",
+      "/images/talklaws/Screenshot 2026-07-15 123435.png",
+      "/images/talklaws/Screenshot 2026-07-15 123459.png",
+      "/images/talklaws/Screenshot 2026-07-15 123527.png",
+      "/images/talklaws/Screenshot 2026-07-15 123547.png",
+    ],
+    imageLabels: [
+      "Hero — Premium landing page with custom branding and responsive hero design",
+      "Our Approach — Editorial-style content layout focused on trust, clarity and business communication",
+      "Ask the Company Secretary — Interactive FAQ experience with expandable legal guidance",
+      "Contact — Consultation booking form integrated with email workflow and responsive validation",
+      "Team — Team showcase featuring dynamic profile cards and responsive layouts",
+    ],
     summary:
       "Designed and developed a modern corporate website for a legal consultancy — responsive UI, professional branding, and backend-powered enquiry management.",
     tags: ["React", "Node.js", "Express", "Tailwind CSS", "Responsive Design"],
@@ -84,8 +96,8 @@ export const CASE_STUDIES: CaseStudyItem[] = [
     ],
     deliverables: ["Live corporate website", "Backend enquiry system", "Responsive design system", "GitHub repository"],
     links: [
-      { label: "Live Website", href: "https://talklaws.com" },
-      { label: "GitHub Repository", href: "https://github.com/dhwani" },
+      { label: "Live Website", href: "https://www.talklaws.in/" },
+      { label: "GitHub Repository", href: "https://github.com/dhwaniagarwal17/Talklaws" },
     ],
   },
   {

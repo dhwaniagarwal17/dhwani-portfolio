@@ -40,23 +40,45 @@ function CardImage({ item, accent, featured }: {
 }) {
   const heightClass = featured ? "h-44 sm:h-52" : "h-32";
   const coverSrc = item.images?.[0];
-  const isSingleLogo = item.images?.length === 1;
+  // Single image = logo (use object-contain + padding)
+  // Multiple images = screenshots (use object-cover object-top)
+  const isSingleLogo = (item.images?.length ?? 0) === 1;
 
   if (coverSrc) {
     return (
-      <div className={`w-full overflow-hidden rounded-xl ${heightClass} flex items-center justify-center`}
-        style={{ background: "rgba(10,10,14,0.9)", border: `1px solid ${accent.border}` }}>
-        <img src={coverSrc} alt={item.imageLabels?.[0] ?? item.title} loading="lazy" draggable={false}
-          className={isSingleLogo ? "max-w-[65%] max-h-[70%] object-contain" : "w-full h-full object-cover object-center"}
-          style={{ imageRendering: "auto" }} />
-      </div>
+      <motion.div
+        className={`w-full overflow-hidden rounded-xl ${heightClass} flex items-center justify-center`}
+        style={{ background: "rgba(10,10,14,0.9)", border: `1px solid ${accent.border}` }}
+        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <img
+          src={coverSrc}
+          alt={item.imageLabels?.[0] ?? item.title}
+          loading="lazy"
+          draggable={false}
+          className={
+            isSingleLogo
+              ? "max-w-[65%] max-h-[70%] object-contain"
+              : featured
+              ? "w-full h-full object-contain"
+              : "w-full h-full object-cover object-top"
+          }
+          style={{ imageRendering: "auto" }}
+        />
+      </motion.div>
     );
   }
 
   // Placeholder
   return (
-    <div className={`w-full overflow-hidden rounded-xl ${heightClass}`}
-      style={{ background: `linear-gradient(135deg, ${accent.bg} 0%, rgba(255,255,255,0.02) 100%)`, border: `1px solid ${accent.border}` }}>
+    <div
+      className={`w-full overflow-hidden rounded-xl ${heightClass}`}
+      style={{
+        background: `linear-gradient(135deg, ${accent.bg} 0%, rgba(255,255,255,0.02) 100%)`,
+        border: `1px solid ${accent.border}`,
+      }}
+    >
       <div className="w-full h-full flex items-center justify-center opacity-20">
         <div className="w-8 h-8 rounded-full" style={{ background: accent.color }} />
       </div>

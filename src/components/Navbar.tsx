@@ -57,7 +57,14 @@ export default function Navbar() {
     setActive(link);
     setMobileOpen(false);
     const el = document.getElementById(link.toLowerCase());
-    el?.scrollIntoView({ behavior: "smooth" });
+    if (!el) return;
+    // Use Lenis if available for smooth inertia scroll, fall back to native
+    const lenis = (window as Window & { __lenis?: { scrollTo: (target: HTMLElement, opts: object) => void } }).__lenis;
+    if (lenis) {
+      lenis.scrollTo(el, { offset: 0, duration: 1.1 });
+    } else {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (

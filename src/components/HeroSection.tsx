@@ -155,7 +155,11 @@ export default function HeroSection() {
           transition={{ duration: 2.2, ease: "easeInOut", repeat: Infinity }}
           className="flex flex-col items-center gap-1 cursor-pointer"
           onClick={() => {
-            document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+            const el = document.getElementById("about");
+            if (!el) return;
+            const lenis = (window as Window & { __lenis?: { scrollTo: (target: HTMLElement, opts: object) => void } }).__lenis;
+            if (lenis) { lenis.scrollTo(el, { offset: 0, duration: 1.1 }); }
+            else { el.scrollIntoView({ behavior: "smooth" }); }
           }}
           aria-label="Scroll down"
         >

@@ -83,6 +83,106 @@ function Lightbox({ images, labels, startIndex, onClose }: {
   );
 }
 
+// ─── Modal gallery — featured image + thumbnail strip ─────────────────────────
+function ModalGallery({ images, labels, onLightbox }: {
+  images: string[]; labels: string[]; onLightbox: (i: number) => void;
+}) {
+  const [active, setActive] = useState(0);
+  const touchStart = useRef(0);
+
+  const prev = () => setActive(a => (a - 1 + images.length) % images.length);
+  const next = () => setActive(a => (a + 1) % images.length);
+
+  // Short caption — everything before the em-dash
+  const shortCaption = (label: string) => label.split("—")[0].trim();
+  const fullCaption = (label: string) => {
+    const parts = label.split("—");
+    return parts.length > 1 ? parts[1].trim() : "";
+  };
+
+  return (
+    <div>
+      {/* ── Featured image ── */}
+      <div className="relative w-full overflow-hidden rounded-xl mb-3 group"
+        style={{ background: "#08080c", border: "1px solid rgba(215,226,234,0.1)" }}
+        onTouchStart={e => { touchStart.current = e.touches[0].clientX; }}
+        onTouchEnd={e => { const d = touchStart.current - e.changedTouches[0].clientX; if (Math.abs(d) > 40) d > 0 ? next() : prev(); }}>
+        <AnimatePresence mode="wait">
+          <motion.img key={active} src={images[active]} alt={labels[active]}
+            initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.22 }}
+            loading="lazy" draggable={false}
+            className="w-full h-auto object-contain cursor-zoom-in"
+            style={{ maxHeight: "360px" }}
+            onClick={() => onLightbox(active)} />
+        </AnimatePresence>
+
+        {/* Prev / Next */}
+        {images.length > 1 && (
+          <>
+            <button onClick={prev} aria-label="Previous screenshot"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              style={{ background: "rgba(0,0,0,0.65)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(215,226,234,0.9)" }}>
+              <ChevronLeft size={14} />
+            </button>
+            <button onClick={next} aria-label="Next screenshot"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              style={{ background: "rgba(0,0,0,0.65)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(215,226,234,0.9)" }}>
+              <ChevronRight size={14} />
+            </button>
+          </>
+        )}
+
+        {/* Click to zoom hint */}
+        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <span className="text-[0.55rem] uppercase tracking-widest px-2 py-0.5 rounded-full"
+            style={{ background: "rgba(0,0,0,0.7)", color: "rgba(215,226,234,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>
+            Click to enlarge
+          </span>
+        </div>
+      </div>
+
+      {/* Caption */}
+      <div className="mb-3 px-1">
+        <p className="font-semibold text-[0.72rem] uppercase tracking-widest"
+          style={{ color: "rgba(215,226,234,0.7)" }}>{shortCaption(labels[active])}</p>
+        {fullCaption(labels[active]) && (
+          <p className="text-[0.7rem] mt-0.5 leading-snug" style={{ color: "rgba(215,226,234,0.45)" }}>
+            {fullCaption(labels[active])}
+          </p>
+        )}
+        {images.length > 1 && (
+          <p className="text-[0.58rem] mt-1 uppercase tracking-widest" style={{ color: "rgba(215,226,234,0.25)" }}>
+            {active + 1} / {images.length}
+          </p>
+        )}
+      </div>
+
+      {/* Thumbnail strip */}
+      {images.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          {images.map((src, i) => (
+            <motion.button key={i} onClick={() => setActive(i)} aria-label={shortCaption(labels[i])}
+              className="flex-shrink-0 overflow-hidden rounded-lg transition-all duration-200"
+              style={{
+                width: 80, height: 52,
+                border: `1.5px solid ${i === active ? "rgba(182,0,168,0.7)" : "rgba(255,255,255,0.08)"}`,
+                background: "#08080c",
+                opacity: i === active ? 1 : 0.5,
+                boxShadow: i === active ? "0 0 0 1px rgba(182,0,168,0.3)" : "none",
+              }}
+              whileHover={{ opacity: 1, scale: 1.04 }}
+              transition={{ duration: 0.15 }}>
+              <img src={src} alt={shortCaption(labels[i])} loading="lazy" draggable={false}
+                className="w-full h-full object-cover object-top" />
+            </motion.button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Modal section helper ─────────────────────────────────────────────────────
 function MSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -180,6 +280,7 @@ function ProjectModal({ project, onClose, onPrev, onNext, hasPrev, hasNext }: {
               {project.githubUrl && (
                 <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
+                  aria-label={`View ${project.title} GitHub repository`}
                   className="inline-flex items-center gap-1.5 rounded-full font-medium uppercase tracking-widest text-[0.63rem] px-5 py-2 transition-colors duration-150"
                   style={{ color: "#D7E2EA", border: "1.5px solid rgba(215,226,234,0.3)", background: "rgba(215,226,234,0.04)" }}
                   onMouseEnter={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.background="rgba(215,226,234,0.09)"; el.style.borderColor="rgba(215,226,234,0.67)"; }}
@@ -190,9 +291,10 @@ function ProjectModal({ project, onClose, onPrev, onNext, hasPrev, hasNext }: {
               {project.liveUrl && (
                 <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
+                  aria-label={`Visit ${project.title} ${project.liveDemoLabel ?? "live demo"}`}
                   className="inline-flex items-center gap-1.5 rounded-full font-medium uppercase tracking-widest text-[0.63rem] px-5 py-2 transition-opacity duration-150 hover:opacity-85"
                   style={{ color: "#fff", background: "linear-gradient(123deg,#18011F 7%,#B600A8 37%,#7621B0 72%,#BE4C00 100%)", boxShadow: "0 4px 4px rgba(181,1,167,0.25),4px 4px 12px #7721B1 inset" }}>
-                  <ArrowUpRight size={11} strokeWidth={2} /> Live Demo
+                  <ArrowUpRight size={11} strokeWidth={2} /> {project.liveDemoLabel ?? "Live Demo"}
                 </a>
               )}
             </div>
@@ -229,21 +331,10 @@ function ProjectModal({ project, onClose, onPrev, onNext, hasPrev, hasNext }: {
                 </div>
               </MSection>
             )}
-            {/* Image gallery */}
+            {/* Image gallery — featured image + thumbnail strip */}
             {imgs.length > 0 && (
-              <MSection title="Screenshots">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {imgs.map((src, i) => (
-                    <motion.div key={i} className="overflow-hidden rounded-xl cursor-zoom-in"
-                      style={{ border:"1px solid rgba(215,226,234,0.1)" }}
-                      whileHover={{ scale:1.03 }} transition={{ duration:0.2 }}
-                      onClick={() => setLightboxIndex(i)}>
-                      <img src={src} alt={labels[i]} loading="lazy" draggable={false}
-                        className="w-full h-auto object-cover object-top"
-                        style={{ aspectRatio:"16/10" }} />
-                    </motion.div>
-                  ))}
-                </div>
+              <MSection title="Project Gallery">
+                <ModalGallery images={imgs} labels={labels} onLightbox={setLightboxIndex} />
               </MSection>
             )}
             {project.challenges && project.challenges.length > 0 && (
@@ -381,8 +472,28 @@ export default function ProjectCard({
             </p>
             <div className={`flex flex-wrap items-center gap-3 transition-all duration-500 ease-out ${compact?"mb-3":"mb-6"}`}
               onClick={e => e.stopPropagation()}>
-              {project.liveDemo && <GhostButton icon={ArrowUpRight}>Live Demo</GhostButton>}
-              {project.github && <GhostButton icon={Github}>GitHub</GhostButton>}
+              {project.liveDemo && (
+                project.liveUrl ? (
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+                    aria-label={`Visit ${project.title} ${project.liveDemoLabel ?? "live demo"}`}
+                    className="rounded-full border-2 border-[#D7E2EA] text-[#D7E2EA] font-medium uppercase tracking-widest text-[0.63rem] sm:text-[0.75rem] px-4 sm:px-6 py-1.5 sm:py-2 flex items-center gap-1.5 hover:bg-[#D7E2EA]/10 transition-colors duration-200">
+                    {project.liveDemoLabel ?? "Live Demo"} <ArrowUpRight size={12} />
+                  </a>
+                ) : (
+                  <GhostButton icon={ArrowUpRight}>{project.liveDemoLabel ?? "Live Demo"}</GhostButton>
+                )
+              )}
+              {project.github && (
+                project.githubUrl ? (
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
+                    aria-label={`View ${project.title} GitHub repository`}
+                    className="rounded-full border-2 border-[#D7E2EA] text-[#D7E2EA] font-medium uppercase tracking-widest text-[0.63rem] sm:text-[0.75rem] px-4 sm:px-6 py-1.5 sm:py-2 flex items-center gap-1.5 hover:bg-[#D7E2EA]/10 transition-colors duration-200">
+                    GitHub <Github size={12} />
+                  </a>
+                ) : (
+                  <GhostButton icon={Github}>GitHub</GhostButton>
+                )
+              )}
             </div>
             {/* Image area */}
             {hasImages ? (

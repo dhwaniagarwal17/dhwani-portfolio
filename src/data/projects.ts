@@ -6,6 +6,8 @@ export interface Project {
   tint: string;
   accent: string;
   liveDemo: boolean;
+  /** Override the "Live Demo" button label, e.g. "Live Website" */
+  liveDemoLabel?: string;
   github: boolean;
   featured?: boolean;
   featuredLabel?: string;
@@ -34,9 +36,26 @@ export const PROJECTS: Project[] = [
     tint: "from-[#1a1a1a] to-[#0C0C0C]",
     accent: "#BBCCD7",
     liveDemo: true,
+    liveDemoLabel: "Live Website",
     github: true,
     featured: true,
     featuredLabel: "Client Project",
+    liveUrl: "https://www.talklaws.in/",
+    githubUrl: "https://github.com/dhwaniagarwal17/Talklaws",
+    images: [
+      "/images/talklaws/Screenshot 2026-07-15 123416.png",
+      "/images/talklaws/Screenshot 2026-07-15 123435.png",
+      "/images/talklaws/Screenshot 2026-07-15 123459.png",
+      "/images/talklaws/Screenshot 2026-07-15 123527.png",
+      "/images/talklaws/Screenshot 2026-07-15 123547.png",
+    ],
+    imageLabels: [
+      "Hero — Premium landing page with custom branding and responsive hero design",
+      "Our Approach — Editorial-style content layout focused on trust, clarity and business communication",
+      "Ask the Company Secretary — Interactive FAQ experience with expandable legal guidance",
+      "Contact — Consultation booking form integrated with email workflow and responsive validation",
+      "Team — Team showcase featuring dynamic profile cards and responsive layouts",
+    ],
     overview:
       "TalkLaws is a fully designed and developed corporate website for a legal consultancy. The project required building a professional online presence from scratch — covering branding, responsive UI, and a backend-powered contact system — all delivered as a complete client product.",
     problem:
@@ -62,8 +81,6 @@ export const PROJECTS: Project[] = [
       "Building accessible, semantic frontend interfaces",
       "Integrating backend services cleanly into a frontend project",
     ],
-    liveUrl: "https://talklaws.com",
-    githubUrl: "https://github.com/dhwani",
   },
   {
     id: "02",
