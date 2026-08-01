@@ -124,7 +124,7 @@ export default function AboutSection() {
             </FadeIn>
             <FadeIn delay={0.42} y={12}>
               <a
-                href="/resume/Dhwani_Agarwal_Resume.pdf"
+                href="/Dhwani_Agarwal_Resume.pdf"
                 download="Dhwani_Agarwal_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
