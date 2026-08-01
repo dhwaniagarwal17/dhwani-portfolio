@@ -124,8 +124,10 @@ export default function AboutSection() {
             </FadeIn>
             <FadeIn delay={0.42} y={12}>
               <a
-                href="/images/sedax-internship-certificate.pdf"
-                download
+                href="/resume/Dhwani_Agarwal_Resume.pdf"
+                download="Dhwani_Agarwal_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full font-medium uppercase tracking-widest inline-flex items-center gap-2 transition-colors duration-200"
                 style={{
                   fontSize: "clamp(0.55rem, 0.9vw, 0.75rem)",

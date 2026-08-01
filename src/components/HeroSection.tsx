@@ -121,7 +121,8 @@ export default function HeroSection() {
           >
             <ContactButton />
             <a
-              href="/resume.pdf"
+              href="/resume/Dhwani_Agarwal_Resume.pdf"
+              download="Dhwani_Agarwal_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full font-medium uppercase tracking-widest inline-flex items-center gap-2 transition-colors duration-200"
