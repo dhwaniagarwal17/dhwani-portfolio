@@ -8,10 +8,11 @@ import ModalPortal from "./ModalPortal";
 
 // ─── Palette ──────────────────────────────────────────────────────────────────
 const CATEGORY_ACCENT: Record<string, { color: string; bg: string; border: string }> = {
-  "Client Project": { color: "rgba(182,0,168,0.9)",  bg: "rgba(182,0,168,0.10)",  border: "rgba(182,0,168,0.25)" },
-  Internship:       { color: "rgba(118,33,176,0.95)", bg: "rgba(118,33,176,0.10)", border: "rgba(118,33,176,0.28)" },
-  Research:         { color: "rgba(91,140,255,0.9)",  bg: "rgba(91,140,255,0.08)", border: "rgba(91,140,255,0.22)" },
-  Engineering:      { color: "rgba(180,140,60,0.9)",  bg: "rgba(180,140,60,0.08)", border: "rgba(180,140,60,0.22)" },
+  "Client Project":         { color: "rgba(182,0,168,0.9)",  bg: "rgba(182,0,168,0.10)",  border: "rgba(182,0,168,0.25)" },
+  Internship:               { color: "rgba(118,33,176,0.95)", bg: "rgba(118,33,176,0.10)", border: "rgba(118,33,176,0.28)" },
+  Research:                 { color: "rgba(91,140,255,0.9)",  bg: "rgba(91,140,255,0.08)", border: "rgba(91,140,255,0.22)" },
+  Engineering:              { color: "rgba(180,140,60,0.9)",  bg: "rgba(180,140,60,0.08)", border: "rgba(180,140,60,0.22)" },
+  "Professional Development": { color: "rgba(40,180,160,0.9)", bg: "rgba(40,180,160,0.08)", border: "rgba(40,180,160,0.22)" },
 };
 
 const STATUS_STYLE: Record<CaseStudyStatus, { color: string; bg: string; border: string }> = {
@@ -482,7 +483,8 @@ export default function ExperienceSection() {
         <div className="max-w-5xl mx-auto space-y-4 sm:space-y-5">
           {featured && <FeaturedCard item={featured} onClick={() => open(featured)} />}
           {rest.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
+              style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))" }}>
               {rest.map((item, i) => (
                 <CaseStudyCard key={item.id} item={item} index={i + 1} onClick={() => open(item)} />
               ))}

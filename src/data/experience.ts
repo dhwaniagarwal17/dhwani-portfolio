@@ -282,4 +282,46 @@ export const CASE_STUDIES: CaseStudyItem[] = [
     deliverables: ["IASC Certificate of Participation", "Asteroid observation reports", "Magazine feature"],
     links: [],
   },
+  {
+    id: "mckinsey",
+    category: "Professional Development",
+    title: "Forward Program Participant",
+    org: "McKinsey & Company",
+    metadata: "Professional Development • 2026",
+    duration: "2026",
+    status: "Completed",
+    images: ["/images/mckinsey-forward.jpg"],
+    imageLabels: ["McKinsey Forward Learning Program"],
+    summary:
+      "Successfully completed McKinsey & Company's Forward Program — a global professional development initiative focused on leadership, structured problem-solving, communication, adaptability, and collaboration.",
+    tags: ["Leadership", "Structured Problem Solving", "Communication", "Critical Thinking", "Adaptability", "Collaboration", "Business Acumen"],
+    overview:
+      "McKinsey Forward is a global learning programme designed to build the skills that matter most in today's workplace. The programme covers leadership, structured problem solving, effective communication, adaptability, collaboration, and business acumen through practical modules and real-world scenarios.",
+    problem:
+      "Developing professional and leadership skills alongside technical expertise is essential for building a well-rounded engineering career. Structured programmes like McKinsey Forward provide frameworks that are difficult to acquire through technical study alone.",
+    myRole:
+      "Programme participant — completing all learning modules, applying structured problem-solving frameworks, and engaging with practical workplace effectiveness content.",
+    contributions: [
+      "Completed all learning modules in the McKinsey Forward curriculum",
+      "Applied structured problem-solving frameworks to business scenarios",
+      "Practised effective communication and stakeholder management techniques",
+      "Engaged with leadership and teamwork case studies",
+      "Developed critical thinking and adaptability skills through programme exercises",
+    ],
+    technologies: ["Leadership", "Structured Problem Solving", "Critical Thinking", "Communication", "Adaptability", "Collaboration", "Business Acumen"],
+    challenges: [
+      "Balancing the programme alongside ongoing academic and project commitments",
+      "Applying business-oriented frameworks to technical problem contexts",
+    ],
+    keyLearnings: [
+      "Structured problem-solving and hypothesis-driven thinking",
+      "Leadership and professional communication techniques",
+      "Adaptability and resilience in dynamic environments",
+      "Collaborative teamwork and stakeholder alignment",
+    ],
+    deliverables: ["McKinsey Forward Programme Certificate", "Completed learning modules"],
+    links: [
+      { label: "View Certificate", href: "/images/mckinsey-forward-certificate.pdf" },
+    ],
+  },
 ];
