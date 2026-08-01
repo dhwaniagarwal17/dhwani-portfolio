@@ -146,7 +146,7 @@ export const CASE_STUDIES: CaseStudyItem[] = [
     deliverables: ["Technical documentation", "Enterprise proposals", "Research reports", "B2G opportunity analysis", "Internship completion certificate"],
     links: [
       { label: "Company Website", href: "https://sedax.in" },
-      { label: "View Certificate", href: "/images/Internship_Completion_Certificate_Dhwani_Agarwal (1).pdf" },
+      { label: "View Certificate", href: "/images/sedax-internship-certificate.pdf" },
     ],
   },
   {

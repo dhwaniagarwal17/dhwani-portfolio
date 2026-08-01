@@ -9,7 +9,7 @@ export default function ProjectsSection() {
   const reversed = useMemo(() => [...PROJECTS].reverse(), []);
 
   const cardRefs = useMemo(
-    () => reversed.map(() => ({ current: null } as MutableRefObject<HTMLDivElement | null>)),
+    () => reversed.map((): MutableRefObject<HTMLDivElement | null> => ({ current: null })),
     [reversed]
   );
 

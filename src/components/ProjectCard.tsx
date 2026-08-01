@@ -408,8 +408,8 @@ const ProjectCard = memo(function ProjectCard({
   project, index, total, displayNumber, cardRef, nextCardRef,
   modalOpen, onOpenModal, onCloseModal, onPrev, onNext, hasPrev, hasNext,
 }: ProjectCardProps) {
-  const selfRef = useRef<HTMLDivElement>(null);
-  const fallbackRef = useRef<HTMLDivElement>(null);
+  const selfRef = useRef<HTMLDivElement | null>(null);
+  const fallbackRef = useRef<HTMLDivElement | null>(null);
   const [cardLightboxIndex, setCardLightboxIndex] = useState<number | null>(null);
 
   const { scrollYProgress } = useScroll({ target: selfRef, offset: ["start end","start start"] });

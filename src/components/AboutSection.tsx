@@ -124,7 +124,7 @@ export default function AboutSection() {
             </FadeIn>
             <FadeIn delay={0.42} y={12}>
               <a
-                href="/images/Internship_Completion_Certificate_Dhwani_Agarwal (1).pdf"
+                href="/images/sedax-internship-certificate.pdf"
                 download
                 className="rounded-full font-medium uppercase tracking-widest inline-flex items-center gap-2 transition-colors duration-200"
                 style={{
