@@ -93,6 +93,14 @@ export const PROJECTS: Project[] = [
     accent: "#D7CBA9",
     liveDemo: true,
     github: true,
+    images: [
+      "/images/hero.png",
+      "/images/about.png",
+    ],
+    imageLabels: [
+      "Hero — Cinematic hero section with floating avatar, split typography and magnetic hover",
+      "About — Two-column about section with professional photo and animated paragraph",
+    ],
     overview:
       "This portfolio is a custom-built React application designed to showcase my work with the same level of craft and attention to detail I bring to every project. It uses Framer Motion for cinematic entrance animations, a sticky scroll-stack for the projects section, and a premium dark aesthetic throughout.",
     problem:
